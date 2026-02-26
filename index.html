@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shaimaa — Flutter & Android Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime:   #c8ff00;
+    --pink:   #ff3cac;
+    --cyan:   #00f5ff;
+    --orange: #ff6b00;
+    --purple: #7b2fff;
+    --yellow: #ffe500;
+    --green:  #22c55e;
+    --bg:     #0a0a0a;
+    --card:   #111111;
+    --border: #1e1e1e;
+    --text:   #f0f0f0;
+    --muted:  #555;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 0 48px; height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,10,0.9); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--lime), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-pill {
+    display: flex; align-items: center; gap: 4px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 100px; padding: 6px 8px;
+  }
+  .nav-pill a {
+    color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 600;
+    padding: 6px 16px; border-radius: 100px; transition: all 0.2s;
+  }
+  .nav-pill a:hover { color: var(--bg); background: var(--text); }
+  .nav-pill a.active { background: var(--lime); color: var(--bg); }
+  .nav-hire {
+    background: var(--lime); color: var(--bg); font-weight: 800; font-size: 12px;
+    letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 24px;
+    text-decoration: none; border-radius: 100px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-hire:hover { transform: scale(1.04); box-shadow: 0 0 24px rgba(200,255,0,0.4); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 100px 48px 60px; position: relative; overflow: hidden; gap: 40px;
+  }
+  .blob { position: absolute; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: 0.22; }
+  .blob-1 { width: 500px; height: 500px; background: var(--purple); top: -100px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--pink); bottom: -80px; left: 20%; }
+  .blob-3 { width: 300px; height: 300px; background: var(--cyan); top: 30%; left: -80px; }
+
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    color: var(--lime); border: 1.5px solid var(--lime); padding: 6px 14px;
+    border-radius: 4px; margin-bottom: 20px; animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag-dot { width:7px;height:7px;background:var(--lime);border-radius:50%;animation:blink 1.5s infinite; }
+
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  .hero-greeting {
+    font-size: 15px; color: #777; margin-bottom: 8px;
+    font-family: 'Space Mono', monospace; letter-spacing: 0.05em;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 9vw, 120px); line-height: 0.88; letter-spacing: 1px;
+    margin-bottom: 12px; animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-name .w1 { display:block; color: var(--text); }
+  .hero-name .w2 {
+    display: block;
+    background: linear-gradient(90deg, var(--lime) 0%, var(--cyan) 50%, var(--pink) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200%; animation: gradShift 4s ease infinite alternate, fadeUp 0.6s 0.1s ease both;
+  }
+  @keyframes gradShift { from{background-position:0%} to{background-position:100%} }
+
+  /* Platform badges */
+  .platform-badges {
+    display: flex; gap: 10px; margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 100px; border: 1.5px solid;
+  }
+  .badge-flutter { background: rgba(84,197,248,0.12); border-color: rgba(84,197,248,0.4); color: #54c5f8; }
+  .badge-android { background: rgba(61,220,132,0.12); border-color: rgba(61,220,132,0.4); color: #3ddc84; }
+  .badge-dot { width:6px;height:6px;border-radius:50%; }
+
+  .hero-desc {
+    font-size: 15px; line-height: 1.8; color: #888; max-width: 430px;
+    margin-bottom: 36px; animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 600; }
+
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.04em; text-decoration: none; padding: 14px 28px;
+    border-radius: 8px; transition: all 0.2s; cursor: pointer; border: none;
+  }
+  .btn-lime { background: var(--lime); color: var(--bg); }
+  .btn-lime:hover { box-shadow: 0 0 30px rgba(200,255,0,0.5); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .hero-right {
+    position: relative; z-index: 2; display: flex; flex-direction: column; gap: 14px;
+    animation: fadeUp 0.6s 0.25s ease both;
+  }
+  .stat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 22px; position: relative; overflow: hidden; transition: transform 0.25s;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+  .stat-card.lime::before  { background: var(--lime); }
+  .stat-card.pink::before  { background: var(--pink); }
+  .stat-card.cyan::before  { background: var(--cyan); }
+  .stat-card.android::before { background: #3ddc84; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 46px; line-height: 1;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .stat-card.lime .stat-num  { color: var(--lime); }
+  .stat-card.pink .stat-num  { color: var(--pink); }
+  .stat-card.cyan .stat-num  { color: var(--cyan); }
+  .stat-card.android .stat-num { color: #3ddc84; }
+  .stat-lbl { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .avail-card {
+    background: linear-gradient(135deg, rgba(200,255,0,0.08), rgba(0,245,255,0.06));
+    border: 1px solid rgba(200,255,0,0.2); border-radius: 16px;
+    padding: 18px 22px; display: flex; align-items: center; gap: 14px;
+  }
+  .avail-dot-wrap { width:34px;height:34px;border-radius:50%;background:rgba(200,255,0,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+  .avail-dot { width:10px;height:10px;background:var(--lime);border-radius:50%;animation:blink 1.5s infinite; }
+  .avail-text { font-size: 13px; color: #999; }
+  .avail-text strong { color: var(--lime); display:block; font-size:14px; margin-bottom:2px; }
+
+  /* MARQUEE */
+  .marquee-bar { border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;background:#0d0d0d;padding:13px 0; }
+  .marquee-track { display:flex; animation:marquee 28s linear infinite; width:max-content; }
+  .marquee-item { display:inline-flex;align-items:center;gap:14px;padding:0 28px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#444;border-right:1px solid var(--border);white-space:nowrap; }
+  .marquee-item .dot { width:6px;height:6px;border-radius:50%; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* SECTIONS */
+  section { padding: 100px 48px; position: relative; }
+  .sec-eyebrow { display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px; }
+  .eyebrow-line { height:2px;width:36px;border-radius:2px; }
+  .sec-title { font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,76px);letter-spacing:1px;line-height:0.95;margin-bottom:16px; }
+  .sec-sub { font-size:16px;color:#666;max-width:500px;line-height:1.7;margin-bottom:56px; }
+
+  /* SKILLS */
+  #skills { background: #0d0d0d; }
+  .skills-layout { display:grid;grid-template-columns:270px 1fr;gap:56px;align-items:start; }
+  .skills-nav { display:flex;flex-direction:column;gap:4px;position:sticky;top:90px; }
+  .skill-tab { display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;cursor:pointer;transition:all 0.2s;border:1px solid transparent; }
+  .skill-tab:hover { background:var(--card); }
+  .skill-tab.active { background:var(--card);border-color:var(--border); }
+  .skill-tab-icon { width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0; }
+  .skill-tab-label { font-size:13px;font-weight:600;color:#777; }
+  .skill-tab.active .skill-tab-label { color:var(--text); }
+  .skill-tab-count { margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;color:#444; }
+  .skill-tab.active .skill-tab-count { color:#888; }
+  .skill-panel { display:none; }
+  .skill-panel.active { display:block; }
+  .skill-panel-title { font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:1px;margin-bottom:24px; }
+  .skill-chips { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px; }
+  .chip { display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;padding:9px 16px;border-radius:100px;background:var(--card);border:1px solid var(--border);transition:all 0.2s;cursor:default; }
+  .chip:hover { transform:scale(1.04); }
+  .chip .chip-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+  .skill-bars-list { display:flex;flex-direction:column;gap:14px; }
+  .sbar-row { display:grid;grid-template-columns:150px 1fr 44px;align-items:center;gap:14px; }
+  .sbar-name { font-size:13px;font-weight:600;color:#bbb; }
+  .sbar-track { height:5px;background:#1c1c1c;border-radius:100px;overflow:hidden; }
+  .sbar-fill { height:100%;border-radius:100px;width:0;transition:width 1s cubic-bezier(0.4,0,0.2,1); }
+  .sbar-pct { font-family:'Space Mono',monospace;font-size:11px;color:#555;text-align:right; }
+
+  /* PROJECTS */
+  .projects-filter { display:flex;gap:8px;margin-bottom:44px;flex-wrap:wrap; }
+  .filter-btn {
+    font-size:12px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;
+    padding:8px 18px;border-radius:100px;border:1.5px solid var(--border);
+    background:transparent;color:#666;cursor:pointer;transition:all 0.2s;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .filter-btn:hover { color:var(--text);border-color:#444; }
+  .filter-btn.active { background:var(--lime);color:var(--bg);border-color:var(--lime); }
+
+  .projects-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
+
+  .proj-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    overflow: hidden; transition: all 0.3s; cursor: pointer;
+  }
+  .proj-card:hover { transform: translateY(-6px); border-color: #333; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .proj-card.hidden { display: none; }
+  .proj-card.featured { grid-column: span 2; }
+
+  /* app visual mockup */
+  .proj-visual { height: 200px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .proj-card.featured .proj-visual { height: 230px; }
+  .proj-visual-bg { position: absolute; inset: 0; }
+
+  /* Phone frame */
+  .phone {
+    width: 70px; height: 124px; border: 2px solid rgba(255,255,255,0.12); border-radius: 16px;
+    background: rgba(0,0,0,0.7); position: relative; z-index: 2; overflow: hidden;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+  }
+  .phone::before {
+    content:''; position:absolute; top:7px; left:50%; transform:translateX(-50%);
+    width:18px; height:3px; background:rgba(255,255,255,0.2); border-radius:10px; z-index:3;
+  }
+  .phone-inner { position:absolute;top:0;left:0;right:0;bottom:0;padding:15px 5px 5px;display:flex;flex-direction:column;gap:4px; }
+
+  /* App store badge */
+  .store-badge {
+    position: absolute; top: 12px; right: 14px; z-index: 4;
+    background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px; padding: 5px 10px;
+    font-family: 'Space Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.6);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .proj-info { padding: 22px; }
+  .proj-type {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 10px;
+    font-family: 'Space Mono', monospace;
+  }
+  .proj-name { font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.5px;margin-bottom:7px;color:var(--text); }
+  .proj-card.featured .proj-name { font-size:30px; }
+  .proj-desc { font-size:13px;color:#666;line-height:1.65;margin-bottom:16px; }
+  .proj-stack { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px; }
+  .stack-tag { font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:#181818;border:1px solid #252525;color:#777; }
+  .proj-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    text-decoration: none; padding: 8px 14px; border-radius: 6px; transition: all 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .proj-link:hover { opacity: 0.85; transform: translateY(-1px); }
+  .proj-metrics { display:flex;gap:18px;margin-top:4px;padding-top:14px;border-top:1px solid var(--border); }
+  .proj-metric { font-size:12px; }
+  .proj-metric span { color:#555; }
+  .proj-metric strong { color:var(--text); }
+
+  /* CONTACT */
+  .contact-strip {
+    background: var(--lime); padding: 80px 48px;
+    display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    position: relative; overflow: hidden;
+  }
+  .contact-strip::before { content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(0,0,0,0.08); }
+  .contact-strip-eyebrow { font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,0,0,0.5);margin-bottom:12px; }
+  .contact-strip-title { font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,68px);letter-spacing:1px;color:var(--bg);line-height:0.95;margin-bottom:16px; }
+  .contact-strip-sub { font-size:15px;color:rgba(0,0,0,0.6);max-width:380px;line-height:1.65; }
+  .contact-strip-right { display:flex;flex-direction:column;gap:14px;min-width:320px;position:relative;z-index:2; }
+  .contact-input {
+    background:rgba(0,0,0,0.12);border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;
+    padding:13px 17px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--bg);
+    outline:none;width:100%;transition:border-color 0.2s;
+  }
+  .contact-input::placeholder { color:rgba(0,0,0,0.4); }
+  .contact-input:focus { border-color:rgba(0,0,0,0.4);background:rgba(0,0,0,0.18); }
+  .contact-send {
+    background:var(--bg);color:var(--lime);font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:800;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;
+    padding:15px;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;
+  }
+  .contact-send:hover { background:#111;transform:scale(1.02); }
+
+  /* FOOTER */
+  footer { border-top:1px solid var(--border);padding:30px 48px;display:flex;justify-content:space-between;align-items:center;gap:20px; }
+  .footer-logo { font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;background:linear-gradient(90deg,var(--lime),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+  .footer-copy { font-size:12px;color:#444; }
+  .footer-links { display:flex;gap:22px; }
+  .footer-links a { font-size:12px;font-weight:600;color:#444;text-decoration:none;text-transform:uppercase;letter-spacing:0.06em;transition:color 0.2s; }
+  .footer-links a:hover { color:var(--lime); }
+
+  /* REVEAL */
+  .reveal { opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease; }
+  .reveal.on { opacity:1;transform:none; }
+
+  @media(max-width:900px) {
+    nav { padding:0 20px; }
+    .nav-pill { display:none; }
+    .hero { grid-template-columns:1fr;padding:90px 20px 60px; }
+    .hero-right { order:-1; }
+    .stat-cards { grid-template-columns:1fr 1fr; }
+    section { padding:70px 20px; }
+    .skills-layout { grid-template-columns:1fr; }
+    .skills-nav { flex-direction:row;flex-wrap:wrap;position:static; }
+    .projects-grid { grid-template-columns:1fr; }
+    .proj-card.featured { grid-column:span 1; }
+    .contact-strip { flex-direction:column;padding:60px 20px; }
+    .contact-strip-right { min-width:0;width:100%; }
+    footer { flex-direction:column;gap:16px;padding:24px 20px;text-align:center; }
+    .sbar-row { grid-template-columns:110px 1fr 36px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Shaimaa.dev</div>
+  <div class="nav-pill">
+    <a href="#skills" class="active">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="nav-hire">Hire Me →</a>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Flutter &amp; Android · 6+ Years</div>
+    <p class="hero-greeting">Hello, I'm</p>
+    <h1 class="hero-name">
+      <span class="w1">Shaimaa</span>
+      <span class="w2">Mobile Dev</span>
+    </h1>
+    <div class="platform-badges">
+      <div class="badge badge-flutter">
+        <span class="badge-dot" style="background:#54c5f8"></span>Flutter
+      </div>
+      <div class="badge badge-android">
+        <span class="badge-dot" style="background:#3ddc84"></span>Android Native
+      </div>
+    </div>
+    <p class="hero-desc">
+      I build <strong>pixel-perfect, high-performance apps</strong> for iOS, Android &amp; Web — shipped to real users, published on the App Store &amp; Google Play. 6+ years turning ideas into products people love.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-lime">View My Apps ↓</a>
+      <a href="#contact" class="btn btn-outline">Let's Work Together</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="stat-cards">
+      <div class="stat-card lime"><div class="stat-num">6+</div><div class="stat-lbl">Years Experience</div></div>
+      <div class="stat-card pink"><div class="stat-num">20+</div><div class="stat-lbl">Apps Shipped</div></div>
+      <div class="stat-card cyan"><div class="stat-num">iOS</div><div class="stat-lbl">&amp; Android</div></div>
+      <div class="stat-card android"><div class="stat-num">Live</div><div class="stat-lbl">On App Stores</div></div>
+    </div>
+    <div class="avail-card">
+      <div class="avail-dot-wrap"><div class="avail-dot"></div></div>
+      <div class="avail-text">
+        <strong>Open to new opportunities</strong>
+        Freelance · Full-time · Remote worldwide
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>Flutter</span>
+    <span class="marquee-item"><span class="dot" style="background:#3ddc84"></span>Android Native</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>Dart</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Kotlin</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--orange)"></span>Java</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>Firebase</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>BLoC</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Riverpod</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--orange)"></span>MVVM</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>REST APIs</span>
+    <span class="marquee-item"><span class="dot" style="background:#3ddc84"></span>Play Store</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>App Store</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Clean Architecture</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>Flutter</span>
+    <span class="marquee-item"><span class="dot" style="background:#3ddc84"></span>Android Native</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>Dart</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Kotlin</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--orange)"></span>Java</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>Firebase</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>BLoC</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Riverpod</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--orange)"></span>MVVM</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--lime)"></span>REST APIs</span>
+    <span class="marquee-item"><span class="dot" style="background:#3ddc84"></span>Play Store</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--cyan)"></span>App Store</span>
+    <span class="marquee-item"><span class="dot" style="background:var(--pink)"></span>Clean Architecture</span>
+  </div>
+</div>
+
+<!-- ══════════ SKILLS ══════════ -->
+<section id="skills">
+  <div class="sec-eyebrow" style="color:var(--cyan)">
+    <span class="eyebrow-line" style="background:var(--cyan)"></span>Tech Stack
+  </div>
+  <h2 class="sec-title reveal">Two platforms,<br>one expert.</h2>
+  <p class="sec-sub reveal">Fluent in both Flutter and Android Native — I choose the right tool for every job.</p>
+
+  <div class="skills-layout">
+    <div class="skills-nav reveal">
+      <div class="skill-tab active" onclick="switchTab(this,'tab-flutter')">
+        <div class="skill-tab-icon" style="background:rgba(84,197,248,0.12)">📱</div>
+        <span class="skill-tab-label">Flutter / Dart</span>
+        <span class="skill-tab-count">8</span>
+      </div>
+      <div class="skill-tab" onclick="switchTab(this,'tab-android')">
+        <div class="skill-tab-icon" style="background:rgba(61,220,132,0.1)">🤖</div>
+        <span class="skill-tab-label">Android Native</span>
+        <span class="skill-tab-count">6</span>
+      </div>
+      <div class="skill-tab" onclick="switchTab(this,'tab-state')">
+        <div class="skill-tab-icon" style="background:rgba(0,245,255,0.08)">🔄</div>
+        <span class="skill-tab-label">State Management</span>
+        <span class="skill-tab-count">5</span>
+      </div>
+      <div class="skill-tab" onclick="switchTab(this,'tab-backend')">
+        <div class="skill-tab-icon" style="background:rgba(255,60,172,0.08)">🔥</div>
+        <span class="skill-tab-label">Backend &amp; Data</span>
+        <span class="skill-tab-count">6</span>
+      </div>
+      <div class="skill-tab" onclick="switchTab(this,'tab-devops')">
+        <div class="skill-tab-icon" style="background:rgba(123,47,255,0.1)">⚙️</div>
+        <span class="skill-tab-label">DevOps &amp; Tools</span>
+        <span class="skill-tab-count">5</span>
+      </div>
+    </div>
+
+    <div class="skills-content reveal">
+
+      <!-- Flutter -->
+      <div id="tab-flutter" class="skill-panel active">
+        <div class="skill-panel-title" style="color:#54c5f8">Flutter / Dart</div>
+        <div class="skill-chips">
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Dart &amp; Null Safety</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Custom Widgets</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Animations</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Platform Channels</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Custom Painters</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Responsive UI</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Flutter Web</div>
+          <div class="chip"><span class="chip-dot" style="background:#54c5f8"></span>Performance Tuning</div>
+        </div>
+        <div class="skill-bars-list">
+          <div class="sbar-row"><span class="sbar-name">Flutter / Dart</span><div class="sbar-track"><div class="sbar-fill" data-w="97" style="background:linear-gradient(90deg,#54c5f8,var(--cyan))"></div></div><span class="sbar-pct">97%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Custom Widgets</span><div class="sbar-track"><div class="sbar-fill" data-w="95" style="background:linear-gradient(90deg,#54c5f8,var(--cyan))"></div></div><span class="sbar-pct">95%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Animations</span><div class="sbar-track"><div class="sbar-fill" data-w="91" style="background:linear-gradient(90deg,#54c5f8,var(--cyan))"></div></div><span class="sbar-pct">91%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Platform Channels</span><div class="sbar-track"><div class="sbar-fill" data-w="84" style="background:linear-gradient(90deg,#54c5f8,var(--cyan))"></div></div><span class="sbar-pct">84%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Flutter Web</span><div class="sbar-track"><div class="sbar-fill" data-w="88" style="background:linear-gradient(90deg,#54c5f8,var(--cyan))"></div></div><span class="sbar-pct">88%</span></div>
+        </div>
+      </div>
+
+      <!-- Android -->
+      <div id="tab-android" class="skill-panel">
+        <div class="skill-panel-title" style="color:#3ddc84">Android Native</div>
+        <div class="skill-chips">
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>Kotlin</div>
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>Java</div>
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>Jetpack Compose</div>
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>MVVM Architecture</div>
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>Jetpack Libraries</div>
+          <div class="chip"><span class="chip-dot" style="background:#3ddc84"></span>Material Design 3</div>
+        </div>
+        <div class="skill-bars-list">
+          <div class="sbar-row"><span class="sbar-name">Kotlin</span><div class="sbar-track"><div class="sbar-fill" data-w="94" style="background:linear-gradient(90deg,#3ddc84,var(--lime))"></div></div><span class="sbar-pct">94%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Java</span><div class="sbar-track"><div class="sbar-fill" data-w="88" style="background:linear-gradient(90deg,#3ddc84,var(--lime))"></div></div><span class="sbar-pct">88%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Jetpack Compose</span><div class="sbar-track"><div class="sbar-fill" data-w="85" style="background:linear-gradient(90deg,#3ddc84,var(--lime))"></div></div><span class="sbar-pct">85%</span></div>
+          <div class="sbar-row"><span class="sbar-name">MVVM</span><div class="sbar-track"><div class="sbar-fill" data-w="93" style="background:linear-gradient(90deg,#3ddc84,var(--lime))"></div></div><span class="sbar-pct">93%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Jetpack Libraries</span><div class="sbar-track"><div class="sbar-fill" data-w="90" style="background:linear-gradient(90deg,#3ddc84,var(--lime))"></div></div><span class="sbar-pct">90%</span></div>
+        </div>
+      </div>
+
+      <!-- State Mgmt -->
+      <div id="tab-state" class="skill-panel">
+        <div class="skill-panel-title" style="color:var(--cyan)">State Management</div>
+        <div class="skill-chips">
+          <div class="chip"><span class="chip-dot" style="background:var(--cyan)"></span>BLoC / Cubit</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--cyan)"></span>Riverpod</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--cyan)"></span>GetX</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--cyan)"></span>Provider</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--cyan)"></span>ViewModel (Android)</div>
+        </div>
+        <div class="skill-bars-list">
+          <div class="sbar-row"><span class="sbar-name">BLoC / Cubit</span><div class="sbar-track"><div class="sbar-fill" data-w="96" style="background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div><span class="sbar-pct">96%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Riverpod</span><div class="sbar-track"><div class="sbar-fill" data-w="89" style="background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div><span class="sbar-pct">89%</span></div>
+          <div class="sbar-row"><span class="sbar-name">GetX</span><div class="sbar-track"><div class="sbar-fill" data-w="87" style="background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div><span class="sbar-pct">87%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Provider</span><div class="sbar-track"><div class="sbar-fill" data-w="92" style="background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div><span class="sbar-pct">92%</span></div>
+          <div class="sbar-row"><span class="sbar-name">ViewModel (Android)</span><div class="sbar-track"><div class="sbar-fill" data-w="91" style="background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div><span class="sbar-pct">91%</span></div>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div id="tab-backend" class="skill-panel">
+        <div class="skill-panel-title" style="color:var(--pink)">Backend &amp; Data</div>
+        <div class="skill-chips">
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>Firebase Suite</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>REST APIs / Dio</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>GraphQL</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>Supabase</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>SQLite / Hive</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--pink)"></span>Room Database</div>
+        </div>
+        <div class="skill-bars-list">
+          <div class="sbar-row"><span class="sbar-name">Firebase</span><div class="sbar-track"><div class="sbar-fill" data-w="95" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div><span class="sbar-pct">95%</span></div>
+          <div class="sbar-row"><span class="sbar-name">REST / Dio</span><div class="sbar-track"><div class="sbar-fill" data-w="97" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div><span class="sbar-pct">97%</span></div>
+          <div class="sbar-row"><span class="sbar-name">GraphQL</span><div class="sbar-track"><div class="sbar-fill" data-w="78" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div><span class="sbar-pct">78%</span></div>
+          <div class="sbar-row"><span class="sbar-name">SQLite / Hive</span><div class="sbar-track"><div class="sbar-fill" data-w="90" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div><span class="sbar-pct">90%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Room Database</span><div class="sbar-track"><div class="sbar-fill" data-w="87" style="background:linear-gradient(90deg,var(--pink),var(--orange))"></div></div><span class="sbar-pct">87%</span></div>
+        </div>
+      </div>
+
+      <!-- DevOps -->
+      <div id="tab-devops" class="skill-panel">
+        <div class="skill-panel-title" style="color:var(--purple)">DevOps &amp; Tools</div>
+        <div class="skill-chips">
+          <div class="chip"><span class="chip-dot" style="background:var(--purple)"></span>CI/CD Fastlane</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--purple)"></span>GitHub Actions</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--purple)"></span>Testing / TDD</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--purple)"></span>App Store / Play</div>
+          <div class="chip"><span class="chip-dot" style="background:var(--purple)"></span>Figma → Code</div>
+        </div>
+        <div class="skill-bars-list">
+          <div class="sbar-row"><span class="sbar-name">CI/CD</span><div class="sbar-track"><div class="sbar-fill" data-w="84" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="sbar-pct">84%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Testing / TDD</span><div class="sbar-track"><div class="sbar-fill" data-w="89" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="sbar-pct">89%</span></div>
+          <div class="sbar-row"><span class="sbar-name">App Store / Play</span><div class="sbar-track"><div class="sbar-fill" data-w="96" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="sbar-pct">96%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Figma → Code</span><div class="sbar-track"><div class="sbar-fill" data-w="92" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="sbar-pct">92%</span></div>
+          <div class="sbar-row"><span class="sbar-name">Git / GitFlow</span><div class="sbar-track"><div class="sbar-fill" data-w="95" style="background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="sbar-pct">95%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROJECTS ══════════ -->
+<section id="projects" style="background:#0d0d0d;">
+  <div class="sec-eyebrow" style="color:var(--pink)">
+    <span class="eyebrow-line" style="background:var(--pink)"></span>Real Projects
+  </div>
+  <h2 class="sec-title reveal">Live on the<br>App Store.</h2>
+  <p class="sec-sub reveal">Real apps I've built, live in production — millions of real users across Egypt, Saudi Arabia &amp; beyond.</p>
+
+  <div class="projects-filter reveal">
+    <button class="filter-btn active" onclick="filterProj(this,'all')">All Apps</button>
+    <button class="filter-btn" onclick="filterProj(this,'flutter')">📱 Flutter</button>
+    <button class="filter-btn" onclick="filterProj(this,'android')">🤖 Android</button>
+    <button class="filter-btn" onclick="filterProj(this,'enterprise')">🏛️ Enterprise</button>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- 1. Twist Music — FEATURED -->
+    <div class="proj-card featured reveal" data-cat="flutter">
+      <div class="proj-visual">
+        <div class="proj-visual-bg" style="background: linear-gradient(135deg, #0a0018 0%, #1a0035 40%, #110022 100%);">
+          <!-- music wave lines decoration -->
+          <svg width="100%" height="100%" style="position:absolute;opacity:0.15" viewBox="0 0 400 230" preserveAspectRatio="none">
+            <polyline points="0,115 30,80 60,130 90,70 120,120 150,60 180,115 210,50 240,115 270,75 300,115 330,85 360,115 400,100" fill="none" stroke="#c8ff00" stroke-width="2"/>
+            <polyline points="0,130 30,100 60,145 90,90 120,135 150,80 180,130 210,75 240,130 270,95 300,130 330,100 360,130 400,115" fill="none" stroke="#7b2fff" stroke-width="1.5" opacity="0.6"/>
+          </svg>
+        </div>
+        <!-- Two phones -->
+        <div style="display:flex;gap:20px;z-index:2;position:relative;align-items:center;">
+          <div class="phone" style="margin-top:12px;">
+            <div class="phone-inner">
+              <div style="height:7px;background:rgba(200,255,0,0.5);border-radius:4px;margin-bottom:3px;"></div>
+              <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:4px;width:65%;margin-bottom:5px;"></div>
+              <!-- Album art -->
+              <div style="height:45px;background:linear-gradient(135deg,rgba(123,47,255,0.5),rgba(200,255,0,0.2));border-radius:6px;margin-bottom:4px;display:flex;align-items:center;justify-content:center;">
+                <div style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(200,255,0,0.5);display:flex;align-items:center;justify-content:center;">
+                  <div style="width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid rgba(200,255,0,0.7);margin-left:1px;"></div>
+                </div>
+              </div>
+              <!-- Wave bars -->
+              <div style="display:flex;gap:2px;align-items:flex-end;height:18px;padding:0 2px;margin-bottom:4px;">
+                <div style="flex:1;height:60%;background:rgba(200,255,0,0.3);border-radius:2px;"></div>
+                <div style="flex:1;height:100%;background:rgba(200,255,0,0.5);border-radius:2px;"></div>
+                <div style="flex:1;height:45%;background:rgba(200,255,0,0.3);border-radius:2px;"></div>
+                <div style="flex:1;height:80%;background:rgba(200,255,0,0.4);border-radius:2px;"></div>
+                <div style="flex:1;height:35%;background:rgba(200,255,0,0.3);border-radius:2px;"></div>
+                <div style="flex:1;height:70%;background:rgba(200,255,0,0.4);border-radius:2px;"></div>
+                <div style="flex:1;height:55%;background:rgba(200,255,0,0.3);border-radius:2px;"></div>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="height:14px;background:rgba(200,255,0,0.25);border-radius:6px;"></div>
+            </div>
+          </div>
+          <div class="phone">
+            <div class="phone-inner">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:3px;">
+                <div style="height:22px;background:rgba(123,47,255,0.3);border-radius:5px;"></div>
+                <div style="height:22px;background:rgba(200,255,0,0.2);border-radius:5px;"></div>
+              </div>
+              <div style="height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:3px;width:80%;"></div>
+              <div style="height:3px;background:rgba(255,255,255,0.05);border-radius:3px;width:55%;margin-bottom:4px;"></div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:4px;">
+                <div style="height:18px;background:rgba(123,47,255,0.2);border-radius:4px;"></div>
+                <div style="height:18px;background:rgba(200,255,0,0.15);border-radius:4px;"></div>
+                <div style="height:18px;background:rgba(123,47,255,0.15);border-radius:4px;"></div>
+              </div>
+              <div style="flex:1;"></div>
+              <div style="height:16px;background:linear-gradient(90deg,rgba(200,255,0,0.3),rgba(123,47,255,0.2));border-radius:6px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="store-badge">🎵 App Store Live</div>
+      </div>
+      <div class="proj-info">
+        <div class="proj-type" style="background:rgba(200,255,0,0.1);color:var(--lime);">🎵 Music Streaming</div>
+        <div class="proj-name">Twist Music, Podcast &amp; Radio</div>
+        <div class="proj-desc">Egypt's leading music streaming app by Etisalat/e&amp; — millions of Arabic &amp; international tracks, podcasts, curated playlists, and live radio. Built with high-quality audio streaming, offline mode, and a seamless cross-platform experience.</div>
+        <div class="proj-stack">
+          <span class="stack-tag">Flutter</span><span class="stack-tag">Dart</span><span class="stack-tag">Audio Streaming</span><span class="stack-tag">Firebase</span><span class="stack-tag">REST APIs</span>
+        </div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><strong>7.7M+</strong> <span>Downloads</span></div>
+          <div class="proj-metric"><strong>270K</strong> <span>Monthly</span></div>
+          <div class="proj-metric"><strong>iOS+Android</strong> <span>Live</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Sulfah سلفة — Saudi Fintech -->
+    <div class="proj-card reveal" data-cat="flutter">
+      <div class="proj-visual">
+        <div class="proj-visual-bg" style="background:linear-gradient(135deg,#001a0a,#002d12);">
+          <svg width="100%" height="100%" style="position:absolute;opacity:0.1" viewBox="0 0 200 200"><defs><pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="0.8" fill="#22c55e"/></pattern></defs><rect width="100%" height="100%" fill="url(#g2)"/></svg>
+        </div>
+        <div class="phone" style="z-index:2;position:relative;">
+          <div class="phone-inner">
+            <!-- Green fintech header -->
+            <div style="height:8px;background:rgba(34,197,94,0.55);border-radius:4px;margin-bottom:4px;"></div>
+            <!-- Balance card -->
+            <div style="height:32px;background:linear-gradient(135deg,rgba(34,197,94,0.2),rgba(0,180,80,0.1));border-radius:6px;border:1px solid rgba(34,197,94,0.25);margin-bottom:4px;display:flex;align-items:center;justify-content:center;">
+              <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid rgba(34,197,94,0.5);margin-right:4px;"></div>
+              <div style="height:4px;width:28px;background:rgba(34,197,94,0.4);border-radius:2px;"></div>
+            </div>
+            <!-- Loan amount rows -->
+            <div style="height:10px;background:rgba(34,197,94,0.12);border-radius:4px;border:1px solid rgba(34,197,94,0.15);margin-bottom:3px;"></div>
+            <div style="height:10px;background:rgba(34,197,94,0.08);border-radius:4px;border:1px solid rgba(34,197,94,0.1);margin-bottom:3px;"></div>
+            <div style="flex:1;"></div>
+            <!-- CTA button -->
+            <div style="height:16px;background:rgba(34,197,94,0.4);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <div style="height:3px;width:24px;background:rgba(34,197,94,0.7);border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="store-badge">🇸🇦 SAMA Approved</div>
+      </div>
+      <div class="proj-info">
+        <div class="proj-type" style="background:rgba(34,197,94,0.1);color:#22c55e;">💸 Saudi Fintech</div>
+        <div class="proj-name">سلفة — Sulfah</div>
+        <div class="proj-desc">Saudi Arabia's first peer-to-peer micro-lending platform, regulated by the Saudi Central Bank (SAMA). Instant loan approvals from 1,000–25,000 SAR, flexible repayment plans, and a fully digital onboarding flow.</div>
+        <div class="proj-stack"><span class="stack-tag">Flutter</span><span class="stack-tag">Fintech</span><span class="stack-tag">BLoC</span><span class="stack-tag">REST APIs</span><span class="stack-tag">Biometrics</span></div>
+        <a href="https://apps.apple.com/us/app/%D8%B3%D9%84%D9%81%D8%A9/id1523225841" target="_blank" class="proj-link" style="background:rgba(34,197,94,0.1);color:#22c55e;">View on App Store ↗</a>
+      </div>
+    </div>
+
+    <!-- 3. HRSD — FEATURED -->
+    <div class="proj-card featured reveal" data-cat="enterprise">
+      <div class="proj-visual">
+        <div class="proj-visual-bg" style="background:linear-gradient(135deg,#001015,#001e2a);">
+          <svg width="100%" height="100%" style="position:absolute;opacity:0.12" viewBox="0 0 400 230"><defs><pattern id="g1" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="#00f5ff"/></pattern></defs><rect width="100%" height="100%" fill="url(#g1)"/></svg>
+        </div>
+        <!-- Gov app mockups: phone + card -->
+        <div style="display:flex;gap:24px;z-index:2;position:relative;align-items:center;">
+          <div class="phone" style="margin-top:10px;">
+            <div class="phone-inner">
+              <!-- KSA flag accent -->
+              <div style="height:6px;background:linear-gradient(90deg,rgba(0,128,0,0.6),rgba(0,245,255,0.3));border-radius:4px;margin-bottom:4px;"></div>
+              <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:3px;width:70%;margin-bottom:5px;"></div>
+              <!-- Service cards -->
+              <div style="height:20px;background:rgba(0,245,255,0.12);border-radius:5px;border:1px solid rgba(0,245,255,0.15);margin-bottom:3px;display:flex;align-items:center;padding:0 5px;gap:3px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:rgba(0,245,255,0.4);"></div>
+                <div style="height:3px;flex:1;background:rgba(0,245,255,0.2);border-radius:2px;"></div>
+              </div>
+              <div style="height:20px;background:rgba(0,245,255,0.08);border-radius:5px;border:1px solid rgba(0,245,255,0.1);margin-bottom:3px;"></div>
+              <div style="height:20px;background:rgba(0,245,255,0.06);border-radius:5px;border:1px solid rgba(0,245,255,0.08);margin-bottom:3px;"></div>
+              <div style="flex:1;"></div>
+              <div style="height:14px;background:rgba(0,245,255,0.2);border-radius:6px;"></div>
+            </div>
+          </div>
+          <!-- Digital card illustration -->
+          <div style="width:120px;height:72px;border:1px solid rgba(0,245,255,0.25);border-radius:10px;background:rgba(0,0,0,0.5);padding:10px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-20px;right:-20px;width:60px;height:60px;border-radius:50%;background:rgba(0,128,0,0.15);"></div>
+            <div style="height:6px;background:rgba(0,245,255,0.3);border-radius:3px;margin-bottom:6px;width:55%;"></div>
+            <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:3px;margin-bottom:3px;"></div>
+            <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:3px;width:70%;margin-bottom:8px;"></div>
+            <div style="height:14px;background:rgba(0,245,255,0.15);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+              <div style="height:2px;width:30px;background:rgba(0,245,255,0.4);border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="store-badge">🏛️ Gov · Saudi Arabia</div>
+      </div>
+      <div class="proj-info">
+        <div class="proj-type" style="background:rgba(0,245,255,0.08);color:var(--cyan);">🏛️ Government SuperApp</div>
+        <div class="proj-name">Ministry of HRSD — Saudi Arabia</div>
+        <div class="proj-desc">The official SuperApp for Saudi Arabia's Ministry of Human Resources &amp; Social Development — serving millions of citizens, residents, and businesses. Covers labor services, social security, disability services, family counseling, and Apple Vision Pro integration. One of KSA's most impactful digital government apps.</div>
+        <div class="proj-stack">
+          <span class="stack-tag">Flutter</span><span class="stack-tag">Clean Architecture</span><span class="stack-tag">REST APIs</span><span class="stack-tag">Biometrics</span><span class="stack-tag">Accessibility</span><span class="stack-tag">visionOS</span>
+        </div>
+        <div class="proj-metrics">
+          <div class="proj-metric"><strong>Millions</strong> <span>Users</span></div>
+          <div class="proj-metric"><strong>KSA Gov</strong> <span>Official</span></div>
+          <div class="proj-metric"><strong>Vision Pro</strong> <span>Supported</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bargainia -->
+    <div class="proj-card reveal" data-cat="flutter">
+      <div class="proj-visual">
+        <div class="proj-visual-bg" style="background:linear-gradient(135deg,#100015,#1a0025);"></div>
+        <div class="phone" style="z-index:2;position:relative;">
+          <div class="phone-inner">
+            <div style="height:7px;background:rgba(255,60,172,0.5);border-radius:4px;margin-bottom:4px;"></div>
+            <!-- Product grid -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:3px;">
+              <div style="height:24px;background:rgba(255,60,172,0.15);border-radius:4px;border:1px solid rgba(255,60,172,0.2);"></div>
+              <div style="height:24px;background:rgba(255,107,0,0.12);border-radius:4px;border:1px solid rgba(255,107,0,0.2);"></div>
+              <div style="height:24px;background:rgba(255,107,0,0.1);border-radius:4px;border:1px solid rgba(255,107,0,0.15);"></div>
+              <div style="height:24px;background:rgba(255,60,172,0.12);border-radius:4px;border:1px solid rgba(255,60,172,0.15);"></div>
+            </div>
+            <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:3px;width:70%;margin-bottom:2px;"></div>
+            <div style="flex:1;"></div>
+            <div style="height:14px;background:linear-gradient(90deg,rgba(255,60,172,0.35),rgba(255,107,0,0.25));border-radius:6px;"></div>
+          </div>
+        </div>
+        <div class="store-badge">🛍️ App Store</div>
+      </div>
+      <div class="proj-info">
+        <div class="proj-type" style="background:rgba(255,60,172,0.1);color:var(--pink);">🛍️ E-Commerce</div>
+        <div class="proj-name">Bargainia</div>
+        <div class="proj-desc">An e-commerce marketplace for new &amp; used electronics — headphones, accessories &amp; gadgets. Seamless browsing, instant checkout, and a buyer-seller intermediary platform.</div>
+        <div class="proj-stack"><span class="stack-tag">Flutter</span><span class="stack-tag">BLoC</span><span class="stack-tag">REST APIs</span><span class="stack-tag">Payment Integration</span></div>
+        <a href="https://apps.apple.com/eg/app/bargainia/id6444919917" target="_blank" class="proj-link" style="background:rgba(255,60,172,0.1);color:var(--pink);">View on App Store ↗</a>
+      </div>
+    </div>
+
+    <!-- 5. Conforum -->
+    <div class="proj-card reveal" data-cat="flutter">
+      <div class="proj-visual">
+        <div class="proj-visual-bg" style="background:linear-gradient(135deg,#0a0010,#14001e);"></div>
+        <div class="phone" style="z-index:2;position:relative;">
+          <div class="phone-inner">
+            <div style="height:6px;background:rgba(123,47,255,0.5);border-radius:4px;margin-bottom:3px;"></div>
+            <!-- Feed items -->
+            <div style="height:18px;background:rgba(123,47,255,0.15);border-radius:5px;border:1px solid rgba(123,47,255,0.2);margin-bottom:3px;display:flex;align-items:center;padding:0 4px;gap:3px;">
+              <div style="width:6px;height:6px;border-radius:50%;background:rgba(123,47,255,0.5);flex-shrink:0;"></div>
+              <div style="height:3px;flex:1;background:rgba(123,47,255,0.2);border-radius:2px;"></div>
+            </div>
+            <div style="height:14px;background:rgba(123,47,255,0.08);border-radius:4px;border:1px solid rgba(123,47,255,0.12);margin-bottom:3px;"></div>
+            <div style="height:14px;background:rgba(123,47,255,0.06);border-radius:4px;border:1px solid rgba(123,47,255,0.1);margin-bottom:3px;"></div>
+            <div style="height:3px;background:rgba(255,255,255,0.06);border-radius:3px;width:60%;margin-bottom:4px;"></div>
+            <div style="flex:1;"></div>
+            <div style="height:14px;background:rgba(123,47,255,0.3);border-radius:6px;"></div>
+          </div>
+        </div>
+        <div class="store-badge">🏗️ App Store</div>
+      </div>
+      <div class="proj-info">
+        <div class="proj-type" style="background:rgba(123,47,255,0.1);color:var(--purple);">🏗️ B2B Platform</div>
+        <div class="proj-name">ConForum</div>
+        <div class="proj-desc">A contracting industry community platform — connecting real estate developers, engineers, contractors, suppliers &amp; bidders in one place.</div>
+        <div class="proj-stack"><span class="stack-tag">Flutter</span><span class="stack-tag">GetX</span><span class="stack-tag">Firebase</span><span class="stack-tag">Social Features</span></div>
+        <a href="https://apps.apple.com/eg/app/conforum/id1661338930" target="_blank" class="proj-link" style="background:rgba(123,47,255,0.1);color:var(--purple);">View on App Store ↗</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div id="contact" class="contact-strip">
+  <div class="contact-strip-left">
+    <div class="contact-strip-eyebrow">Let's build together</div>
+    <div class="contact-strip-title">Have a project<br>for Shaimaa?</div>
+    <p class="contact-strip-sub">Flutter · Android Native · Cross-platform — I'll get back to you within 24 hours with ideas and a free estimate.</p>
+  </div>
+  <div class="contact-strip-right">
+    <input class="contact-input" type="text" placeholder="Your name">
+    <input class="contact-input" type="email" placeholder="your@email.com">
+    <input class="contact-input" type="text" placeholder="Tell me about your app idea...">
+    <button class="contact-send" id="sendBtn" onclick="handleSend(this)">Send Message →</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Shaimaa.dev</div>
+  <div class="footer-copy">© 2025 Shaimaa · Flutter &amp; Android Developer</div>
+  <div class="footer-links">
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">Upwork</a>
+    <a href="#">Pub.dev</a>
+  </div>
+</footer>
+
+<script>
+  function switchTab(tabEl, panelId) {
+    document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.skill-panel').forEach(p => p.classList.remove('active'));
+    tabEl.classList.add('active');
+    const panel = document.getElementById(panelId);
+    panel.classList.add('active');
+    panel.querySelectorAll('.sbar-fill').forEach(bar => {
+      bar.style.width = '0';
+      setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 60);
+    });
+  }
+
+  function filterProj(btn, cat) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.proj-card').forEach(card => {
+      card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat);
+    });
+  }
+
+  function handleSend(btn) {
+    btn.textContent = 'Message Sent! ✓';
+    btn.style.color = '#22c55e';
+    btn.style.cursor = 'default';
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('on'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Animate skill bars on first view
+  const barObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.skill-panel.active .sbar-fill').forEach(bar => {
+          setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 300);
+        });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const sk = document.getElementById('skills');
+  if (sk) barObserver.observe(sk);
+
+  // Nav active on scroll
+  const sections = document.querySelectorAll('section[id], div[id="contact"]');
+  const navLinks = document.querySelectorAll('.nav-pill a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+  });
+</script>
+</body>
+</html>
