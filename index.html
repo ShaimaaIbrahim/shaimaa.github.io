@@ -284,20 +284,19 @@
   .contact-strip-eyebrow { font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(0,0,0,0.5);margin-bottom:12px; }
   .contact-strip-title { font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,68px);letter-spacing:1px;color:var(--bg);line-height:0.95;margin-bottom:16px; }
   .contact-strip-sub { font-size:15px;color:rgba(0,0,0,0.6);max-width:380px;line-height:1.65; }
-  .contact-strip-right { display:flex;flex-direction:column;gap:14px;min-width:320px;position:relative;z-index:2; }
-  .contact-input {
-    background:rgba(0,0,0,0.12);border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;
-    padding:13px 17px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--bg);
-    outline:none;width:100%;transition:border-color 0.2s;
+  .contact-strip-right { display:flex;flex-direction:column;gap:16px;min-width:340px;position:relative;z-index:2; }
+  .contact-info-card {
+    display:flex;align-items:center;gap:16px;
+    background:rgba(0,0,0,0.15);border:1.5px solid rgba(0,0,0,0.18);border-radius:14px;
+    padding:18px 20px;text-decoration:none;transition:all 0.2s;cursor:pointer;
   }
-  .contact-input::placeholder { color:rgba(0,0,0,0.4); }
-  .contact-input:focus { border-color:rgba(0,0,0,0.4);background:rgba(0,0,0,0.18); }
-  .contact-send {
-    background:var(--bg);color:var(--lime);font-family:'Plus Jakarta Sans',sans-serif;
-    font-weight:800;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;
-    padding:15px;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;
-  }
-  .contact-send:hover { background:#111;transform:scale(1.02); }
+  .contact-info-card:hover { background:rgba(0,0,0,0.25);border-color:rgba(0,0,0,0.35);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.15); }
+  .contact-info-icon { font-size:26px;flex-shrink:0; }
+  .contact-info-body { flex:1; }
+  .contact-info-label { font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(0,0,0,0.45);margin-bottom:4px;font-family:'Space Mono',monospace; }
+  .contact-info-value { font-size:14px;font-weight:700;color:var(--bg);word-break:break-all; }
+  .contact-info-arrow { font-size:18px;color:rgba(0,0,0,0.4);font-weight:700;flex-shrink:0;transition:transform 0.2s; }
+  .contact-info-card:hover .contact-info-arrow { transform:translate(2px,-2px);color:rgba(0,0,0,0.7); }
 
   /* FOOTER */
   footer { border-top:1px solid var(--border);padding:30px 48px;display:flex;justify-content:space-between;align-items:center;gap:20px; }
@@ -806,14 +805,26 @@
 <div id="contact" class="contact-strip">
   <div class="contact-strip-left">
     <div class="contact-strip-eyebrow">Let's build together</div>
-    <div class="contact-strip-title">Have a project<br>for Shaimaa?</div>
-    <p class="contact-strip-sub">Flutter · Android Native · Cross-platform — I'll get back to you within 24 hours with ideas and a free estimate.</p>
+    <div class="contact-strip-title">Get in touch<br>with Shaimaa</div>
+    <p class="contact-strip-sub">Flutter · Android Native · Cross-platform — reach out directly and I'll get back to you within 24 hours.</p>
   </div>
   <div class="contact-strip-right">
-    <input class="contact-input" type="text" placeholder="Your name">
-    <input class="contact-input" type="email" placeholder="your@email.com">
-    <input class="contact-input" type="text" placeholder="Tell me about your app idea...">
-    <button class="contact-send" id="sendBtn" onclick="handleSend(this)">Send Message →</button>
+    <a href="mailto:shaimaasalama33.sh@gmail.com" class="contact-info-card">
+      <div class="contact-info-icon">✉️</div>
+      <div class="contact-info-body">
+        <div class="contact-info-label">Email</div>
+        <div class="contact-info-value">shaimaasalama33.sh@gmail.com</div>
+      </div>
+      <div class="contact-info-arrow">↗</div>
+    </a>
+    <a href="tel:+201003580807" class="contact-info-card">
+      <div class="contact-info-icon">📞</div>
+      <div class="contact-info-body">
+        <div class="contact-info-label">Phone / WhatsApp</div>
+        <div class="contact-info-value">+20 100 358 0807</div>
+      </div>
+      <div class="contact-info-arrow">↗</div>
+    </a>
   </div>
 </div>
 
